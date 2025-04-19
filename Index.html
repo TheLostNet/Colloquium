@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shadow Garden Zugang</title>
+  <style>
+    body {
+      background-color: #0a0a0a;
+      color: #e0e0e0;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .hidden { display: none; }
+    input, textarea, button {
+      margin: 8px 0;
+      padding: 10px;
+      background: #111;
+      border: 1px solid #444;
+      color: #e0e0e0;
+      width: 100%;
+      max-width: 400px;
+    }
+    button {
+      cursor: pointer;
+      background: #222;
+      border: 1px solid #666;
+    }
+    button:hover {
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Shadow Garden - Zugang</h2>
+  <div id="login">
+    <p>Gib deinen Schattennamen ein:</p>
+    <input type="password" id="shadowpass" placeholder="Schattenname">
+    <button onclick="verify()">Eintreten</button>
+  </div>
+
+  <form id="shadowForm" class="hidden" method="POST" action="https://formspree.io/f/yourid">
+    <input type="text" name="Schattenname" id="shadowname" readonly />
+    <textarea name="Nachricht" rows="6" placeholder="Stelle deine Frage oder sende deine Antwort..." required></textarea>
+    <button type="submit">Senden an den Schattenfürsten</button>
+  </form>
+
+  <script>
+    const allowedNames = ["GhostKnight", "DarkWhisper", "SilentFang", "CrowEyes"];
+    function verify() {
+      const input = document.getElementById('shadowpass').value.trim();
+      if (allowedNames.includes(input)) {
+        document.getElementById('login').classList.add('hidden');
+        document.getElementById('shadowForm').classList.remove('hidden');
+        document.getElementById('shadowname').value = input;
+      } else {
+        alert("Zugang verweigert. Der Schatten kennt dich nicht.");
+      }
+    }
+  </script>
+
+</body>
+</html>
