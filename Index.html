@@ -1,301 +1,63 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shadow Garden Zugang</title>
+  <meta charset="UTF-8">
+  <title>Shadow Garden - Kontakt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CSS (optional) -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    * { box-sizing: border-box; }
-
-    body {
-      background-color: #0a0a0a;
-      color: #e0e0e0;
-      font-family: 'Courier New', monospace;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
+    #shadowMessage {
+      opacity: 0;
+      transition: opacity 0.5s ease;
     }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .hidden { display: none; }
-
-    h2 { margin-bottom: 20px; }
-
-    input, textarea, select, button {
-      margin: 8px 0;
-      padding: 10px;
-      background: #111;
-      border: 1px solid #444;
-      color: #e0e0e0;
-      width: 100%;
-    }
-
-    button {
-      cursor: pointer;
-      background: #222;
-      border: 1px solid #666;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background: #333;
-    }
-
-    .error {
-      color: #ff4444;
-      font-size: 0.9em;
-      font-style: italic;
-      margin-top: 4px;
-    }
-
-    .shake {
-      animation: shake 0.4s;
-    }
-
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      50% { transform: translateX(5px); }
-      75% { transform: translateX(-5px); }
-      100% { transform: translateX(0); }
-    }
-
-    #intro {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: black;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      color: #e0e0e0;
-      font-size: 2rem;
-      text-align: center;
+    #shadowMessage.show {
       opacity: 1;
     }
-    
-    #intro.hide {
-      animation: fadeOut 6s ease forwards;
-    }
-
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      100% { opacity: 0; visibility: hidden; }
-    }
-
-    #clickHint {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      color: #888;
-      animation: blink 1.2s infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    img.logo {
-      width: 140px;
-      height: auto;
-      margin-bottom: 20px;
-      filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
-      animation: fadeIn 2s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    #mainContent.fadein {
-      animation: contentFadeIn 1.5s ease forwards;
-      opacity: 0;
-    }
-    
-    @keyframes contentFadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
   </style>
 </head>
-<body>
+<body class="bg-black text-white font-mono min-h-screen flex items-center justify-center p-6">
 
-  <div id="intro">
-    Willkommen im Schatten...
-    <div id="clickHint">Klicke, um fortzufahren</div>
-  </div>
-
-  <audio id="clickSound" src="./click.mp3" preload="auto"></audio>
-  <audio id="introSound" src="./intro.mp3" preload="auto"></audio>
-
-  <div class="container" id="mainContent" style="display: none;">
-    <img src="./logo.png" alt="Shadow Garden Logo" class="logo" />
-
-    <div id="login">
-      <h2>Shadow Garden - Zugang</h2>
-      <p>Gib deinen Schattennamen ein und wähle deine Absicht:</p>
-      <input type="password" id="shadowpass" placeholder="Schattenname" />
-      <select id="entryType">
-        <option value="">-- Absicht wählen --</option>
-        <option value="Frage">Ich habe eine Frage</option>
-        <option value="Antwort">Ich bringe eine Antwort</option>
-      </select>
-      <button onclick="verify()">Eintreten</button>
-      <div id="loginError" class="error hidden">⚠️ Zugang verweigert.</div>
-    </div>
-
-    <div id="formArea" class="hidden">
-      <form id="shadowForm" method="POST" onsubmit="submitForm(event)">
-        <input type="text" name="Schattenname" id="shadowname" readonly />
-        <input type="hidden" name="Typ" id="hiddenTyp" />
-        <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schattenfürsten..." class="hidden"></textarea>
-        <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
-        <div id="textError" class="error hidden"></div>
-        <button type="submit">Senden an den Schattenfürsten</button>
-      </form>
-      <button onclick="goBack()">⇦ Zurück zur Auswahl</button>
-    </div>
+  <div id="contactForm" class="w-full max-w-md bg-gray-900 p-6 rounded-2xl shadow-2xl border border-gray-700">
+    <h2 class="text-2xl mb-4 text-center text-purple-400">Sende deine Botschaft in die Schatten</h2>
+    <form id="shadowForm">
+      <input type="text" name="name" placeholder="Dein Name" class="w-full mb-3 p-2 bg-gray-800 border border-gray-700 rounded text-white" required>
+      <input type="email" name="email" placeholder="Deine E-Mail" class="w-full mb-3 p-2 bg-gray-800 border border-gray-700 rounded text-white" required>
+      <textarea name="message" placeholder="Deine Nachricht" class="w-full mb-3 p-2 bg-gray-800 border border-gray-700 rounded text-white" rows="5" required></textarea>
+      <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 transition rounded p-2 font-bold">
+        Senden
+      </button>
+    </form>
+    <div id="shadowMessage" class="hidden text-green-500 text-center mt-4">Nachricht erfolgreich gesendet.</div>
   </div>
 
   <script>
-    const allowedNames = [
-      "7[]x§~4;;8;+9_.a!-3ä2y<<w][x§~9_.",
-      "q//"
-    ];
-  
-    const encryptTable = {
-      'a': 'q//', 'b': 'r--', 'c': 's==', 'd': 't__', 'e': 'u^^', 'f': 'v{{', 'g': 'w][', 'h': 'x§~',
-      'i': 'y<<', 'j': 'z>>', 'k': '0;;', 'l': '1;;', 'm': '2;;', 'n': '3ä2', 'o': '4;;', 'p': '5;;',
-      'q': '6;;', 'r': '7;;', 's': '8;+', 't': '9_.', 'u': 'a;;', 'v': 'b;;', 'w': 'c;;', 'x': 'd;;',
-      'y': 'e;;', 'z': 'f;;', ' ': 'g;;','A': '1@!', 'B': '2#$', 'C': '3%&', 'D': '4*(', 'E': '5)@',
-      'F': '6+=', 'G': '7[]', 'H': '8{}', 'I': '9<>', 'J': '0|/', 'K': 'a!-', 'L': 'b@&', 'M': 'c$#',
-      'N': 'd%$', 'O': 'e^(', 'P': 'f)+', 'Q': 'g~[', 'R': 'h?;', 'S': 'i;_', 'T': 'j./', 'U': 'k~#',
-      'V': 'l*?', 'W': 'm^&', 'X': 'n#$', 'Y': 'o{}', 'Z': 'p|@', '1': 'h;;', '2': 'i;;', '3': 'j;;',
-      '4': 'k;;', '5': 'l;;', '6': 'm;;', '7': 'n;;', '8': 'o;;', '9': 'p;;', '0': 'q;;'
-    };
-  
-    function encrypt(text) {
-      return text.split('').map(char => encryptTable[char] || char).join('');
-    }
-  
-    function playClick() {
-      const clickSound = document.getElementById('clickSound');
-      clickSound.volume = 0.3;
-      clickSound.currentTime = 0;
-      clickSound.play();
-    }
-  
-    function verify() {
-      playClick();
-      const input = document.getElementById('shadowpass').value.trim();
-      const entryType = document.getElementById('entryType').value;
-      const errorBox = document.getElementById('loginError');
-      const encryptedInput = encrypt(input);
-  
-      if (!allowedNames.includes(encryptedInput) || !entryType) {
-        let message = !allowedNames.includes(encryptedInput)
-          ? "⚠️ Der Schatten kennt dich nicht."
-          : "⚠️ Wähle deine Absicht: Frage oder Antwort.";
-        errorBox.textContent = message;
-        errorBox.classList.remove("hidden", "shake");
-        void errorBox.offsetWidth;
-        errorBox.classList.add("shake");
-        return;
-      }
-  
-      document.getElementById('login').classList.add('hidden');
-      document.getElementById('formArea').classList.remove('hidden');
-      document.getElementById('shadowname').value = input;
-      document.getElementById('hiddenTyp').value = entryType;
-  
-      document.getElementById('frageField').classList.toggle('hidden', entryType !== "Frage");
-      document.getElementById('antwortField').classList.toggle('hidden', entryType !== "Antwort");
-      errorBox.classList.add("hidden");
-    }
-  
+    document.getElementById('shadowForm').addEventListener('submit', submitForm);
+
     function validateForm() {
-      playClick();
-      const entryType = document.getElementById("hiddenTyp").value;
-      const frage = document.getElementById("frageField").value.trim();
-      const antwort = document.getElementById("antwortField").value.trim();
-      const textError = document.getElementById("textError");
-  
-      if ((entryType === "Frage" && !frage) || (entryType === "Antwort" && !antwort)) {
-        textError.textContent = "Der Schatten kann keine Leere lesen. Fülle das Feld aus.";
-        textError.classList.remove("hidden", "shake");
-        void textError.offsetWidth;
-        textError.classList.add("shake");
-        return false;
-      }
-  
-      textError.classList.add("hidden");
-      return true;
+      const form = document.getElementById('shadowForm');
+      const name = form.elements['name'].value.trim();
+      const email = form.elements['email'].value.trim();
+      const message = form.elements['message'].value.trim();
+      return name && email && message;
     }
-  
-    function goBack() {
-      playClick();
-      document.getElementById('formArea').classList.add('hidden');
-      document.getElementById('login').classList.remove('hidden');
-      document.getElementById('frageField').value = '';
-      document.getElementById('antwortField').value = '';
-    }
-  
-    window.addEventListener('DOMContentLoaded', () => {
-      const intro = document.getElementById('intro');
-      const introSound = document.getElementById('introSound');
-      const mainContent = document.getElementById('mainContent');
-  
-      introSound.volume = 0.4;
-  
-      function startApp() {
-        intro.classList.add('hide');
-        introSound.play();
-  
-        setTimeout(() => {
-          intro.style.display = 'none';
-          mainContent.style.display = 'flex';
-          mainContent.classList.add('fadein');
-        }, 6000);
-      }
-  
-      document.addEventListener('mousedown', function handler(event) {
-        if (event.button === 0) {
-          document.removeEventListener('mousedown', handler);
-          startApp();
-        }
-      });
-    });
+
     function submitForm(event) {
       event.preventDefault();
       if (!validateForm()) return;
-    
+
       const form = document.getElementById('shadowForm');
       const formData = new FormData(form);
-    
+
       fetch("https://formspree.io/f/mjkyzyvn", {
         method: "POST",
         body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
+        headers: { 'Accept': 'application/json' }
       })
       .then(response => {
         if (response.ok) {
-          alert("Die Schatten haben deine Botschaft empfangen.");
           form.reset();
-          goBack();
+          showMessage("Deine Botschaft wurde in die Schatten gesandt.");
         } else {
           return response.json().then(data => {
             throw new Error(data.error || "Unbekannter Fehler");
@@ -303,10 +65,28 @@
         }
       })
       .catch(error => {
-        alert("Ein Fehler ist aufgetreten: " + error.message);
+        showMessage("Fehler beim Senden: " + error.message, true);
       });
     }
 
+    function showMessage(msg, isError = false) {
+      const el = document.getElementById('shadowMessage');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      el.classList.add('show');
+      if (isError) {
+        el.classList.remove('text-green-500');
+        el.classList.add('text-red-500');
+      } else {
+        el.classList.remove('text-red-500');
+        el.classList.add('text-green-500');
+      }
+      setTimeout(() => {
+        el.classList.remove('show');
+        setTimeout(() => el.classList.add('hidden'), 500);
+      }, 3000);
+    }
   </script>
+
 </body>
 </html>
