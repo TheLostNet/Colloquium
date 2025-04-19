@@ -26,6 +26,8 @@
       height: 100vh;
       padding: 20px;
       text-align: center;
+      opacity: 0;
+      transition: opacity 1s ease;
     }
 
     .hidden {
@@ -76,41 +78,49 @@
     }
 
     #intro {
-      background: linear-gradient(145deg, #000000, #111111);
-      font-family: 'Cinzel', serif;
-      font-weight: bold;
-      letter-spacing: 2px;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: #e0e0e0;
+      font-size: 2rem;
+      animation: fadeOut 4s ease forwards;
     }
-    
-    .intro-glow {
-      text-shadow: 0 0 10px #fff, 0 0 20px #aaa, 0 0 40px #444;
-      animation: fadeText 4s ease-in-out forwards;
-    }
-    
-    @keyframes fadeText {
-      0% { opacity: 0; transform: scale(0.8); }
-      30% { opacity: 1; transform: scale(1.05); }
-      100% { opacity: 0; transform: scale(1); }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      90% { opacity: 1; }
+      100% {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
     }
 
     img.logo {
-      width: 120px;
+      width: 150px;
       height: auto;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+      filter: drop-shadow(0 0 10px #aaa);
+      transition: transform 0.3s ease;
+    }
+
+    img.logo:hover {
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
 
-  <div id="intro">
-    <div class="intro-glow">Willkommen im Schatten...</div>
-  </div>
-
+  <div id="intro">Willkommen im Schatten...</div>
 
   <audio id="clickSound" src="./click.mp3" preload="auto"></audio>
   <audio id="introSound" src="./intro.mp3" preload="auto"></audio>
 
-  <div class="container" id="mainContent" style="display: none;">
+  <div class="container" id="mainContent">
     <img src="./logo.png" alt="Shadow Garden Logo" class="logo" />
 
     <div id="login">
@@ -142,14 +152,6 @@
   </div>
 
   <script>
-    let introPlayed = false;
-      document.addEventListener('click', () => {
-        if (!introPlayed) {
-          document.getElementById("introSound").play().catch(() => {});
-          introPlayed = true;
-        }
-      });
-
     const allowedNames = [
       "7[]x§~4;;8;+9_.a!-3ä2y<<w][x§~9_.",
       "q//"
@@ -171,11 +173,10 @@
     }
 
     function playClick() {
-      const clickAudio = document.getElementById('clickSound');
-      clickAudio.currentTime = 0;
-      clickAudio.play();
+      const click = document.getElementById('clickSound');
+      click.currentTime = 0;
+      click.play();
     }
-
 
     function verify() {
       playClick();
@@ -193,7 +194,7 @@
         }
         errorBox.textContent = message;
         errorBox.classList.remove("hidden", "shake");
-        void errorBox.offsetWidth; // Reset animation
+        void errorBox.offsetWidth;
         errorBox.classList.add("shake");
         return;
       }
@@ -237,11 +238,23 @@
     }
 
     window.addEventListener('load', () => {
-      document.getElementById("introSound").play();
-      setTimeout(() => {
-        document.getElementById('intro').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'flex';
-      }, 4000);
+      const intro = document.getElementById("intro");
+      const main = document.getElementById("mainContent");
+      let hasClicked = false;
+
+      const triggerStart = () => {
+        if (hasClicked) return;
+        hasClicked = true;
+        document.getElementById("introSound").play();
+        intro.style.animationPlayState = 'running';
+        setTimeout(() => {
+          intro.style.display = 'none';
+          main.style.opacity = 1;
+        }, 4000);
+      };
+
+      document.body.addEventListener("click", triggerStart);
+      document.body.addEventListener("keydown", triggerStart);
     });
   </script>
 
