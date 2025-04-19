@@ -98,14 +98,18 @@
     #clickHint {
       margin-top: 20px;
       font-size: 1.2rem;
-      color: #888;
-      animation: blink 1.2s infinite;
+      color: #aaa;
+      animation: blink 1s infinite;
+      font-style: italic;
+      letter-spacing: 1px;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
     }
-
+    
     @keyframes blink {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+      50% { opacity: 0.2; }
     }
+
 
     img.logo {
       width: 140px;
@@ -257,11 +261,13 @@
         introSound.play();
       }
 
-      // Erst nach Interaktion starten (wegen Browser-Richtlinien)
-      document.addEventListener('click', function handler() {
-        document.removeEventListener('click', handler);
-        startApp();
+      document.addEventListener('mousedown', function handler(e) {
+        if (e.button === 0) {
+          document.removeEventListener('mousedown', handler);
+          startApp();
+        }
       });
+
     });
   </script>
 </body>
