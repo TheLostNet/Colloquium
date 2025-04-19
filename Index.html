@@ -83,7 +83,7 @@
       text-align: center;
       opacity: 1;
     }
-    
+
     #intro.hide {
       animation: fadeOut 6s ease forwards;
     }
@@ -122,7 +122,7 @@
       animation: contentFadeIn 1.5s ease forwards;
       opacity: 0;
     }
-    
+
     @keyframes contentFadeIn {
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
@@ -142,7 +142,6 @@
 
   <div class="container" id="mainContent" style="display: none;">
     <img src="./logo.png" alt="Shadow Garden Logo" class="logo" />
-
     <div id="login">
       <h2>Shadow Garden - Zugang</h2>
       <p>Gib deinen Schattennamen ein und wähle deine Absicht:</p>
@@ -168,20 +167,19 @@
       <button onclick="goBack()">⇦ Zurück zur Auswahl</button>
     </div>
   </div>
-  
-  <div id="submitSuccess" class="hidden">
+
+  <div class="container hidden" id="submitSuccess">
     <h2>🕯️ Deine Botschaft wurde dem Schatten übermittelt.</h2>
     <p>Der Schattenfürst hat deine Worte empfangen. Er wird antworten... wenn er es für nötig hält.</p>
     <button onclick="returnToLogin()">⇦ Zurück zur Anmeldung</button>
   </div>
-
 
   <script>
     const allowedNames = [
       "7[]x§~4;;8;+9_.a!-3ä2y<<w][x§~9_.",
       "q//"
     ];
-  
+
     const encryptTable = {
       'a': 'q//', 'b': 'r--', 'c': 's==', 'd': 't__', 'e': 'u^^', 'f': 'v{{', 'g': 'w][', 'h': 'x§~',
       'i': 'y<<', 'j': 'z>>', 'k': '0;;', 'l': '1;;', 'm': '2;;', 'n': '3ä2', 'o': '4;;', 'p': '5;;',
@@ -192,25 +190,25 @@
       'V': 'l*?', 'W': 'm^&', 'X': 'n#$', 'Y': 'o{}', 'Z': 'p|@', '1': 'h;;', '2': 'i;;', '3': 'j;;',
       '4': 'k;;', '5': 'l;;', '6': 'm;;', '7': 'n;;', '8': 'o;;', '9': 'p;;', '0': 'q;;'
     };
-  
+
     function encrypt(text) {
       return text.split('').map(char => encryptTable[char] || char).join('');
     }
-  
+
     function playClick() {
       const clickSound = document.getElementById('clickSound');
       clickSound.volume = 0.3;
       clickSound.currentTime = 0;
       clickSound.play();
     }
-  
+
     function verify() {
       playClick();
       const input = document.getElementById('shadowpass').value.trim();
       const entryType = document.getElementById('entryType').value;
       const errorBox = document.getElementById('loginError');
       const encryptedInput = encrypt(input);
-  
+
       if (!allowedNames.includes(encryptedInput) || !entryType) {
         let message = !allowedNames.includes(encryptedInput)
           ? "⚠️ Der Schatten kennt dich nicht."
@@ -221,24 +219,24 @@
         errorBox.classList.add("shake");
         return;
       }
-  
+
       document.getElementById('login').classList.add('hidden');
       document.getElementById('formArea').classList.remove('hidden');
       document.getElementById('shadowname').value = input;
       document.getElementById('hiddenTyp').value = entryType;
-  
+
       document.getElementById('frageField').classList.toggle('hidden', entryType !== "Frage");
       document.getElementById('antwortField').classList.toggle('hidden', entryType !== "Antwort");
       errorBox.classList.add("hidden");
     }
-  
+
     function validateForm() {
       playClick();
       const entryType = document.getElementById("hiddenTyp").value;
       const frage = document.getElementById("frageField").value.trim();
       const antwort = document.getElementById("antwortField").value.trim();
       const textError = document.getElementById("textError");
-  
+
       if ((entryType === "Frage" && !frage) || (entryType === "Antwort" && !antwort)) {
         textError.textContent = "Der Schatten kann keine Leere lesen. Fülle das Feld aus.";
         textError.classList.remove("hidden", "shake");
@@ -246,11 +244,11 @@
         textError.classList.add("shake");
         return false;
       }
-  
+
       textError.classList.add("hidden");
       return true;
     }
-  
+
     function goBack() {
       playClick();
       document.getElementById('formArea').classList.add('hidden');
@@ -258,25 +256,58 @@
       document.getElementById('frageField').value = '';
       document.getElementById('antwortField').value = '';
     }
-  
+
+    function returnToLogin() {
+      playClick();
+      document.getElementById('submitSuccess').classList.add('hidden');
+      document.getElementById('login').classList.remove('hidden');
+      document.getElementById('shadowpass').value = '';
+      document.getElementById('entryType').value = '';
+    }
+
+    function submitForm(event) {
+      event.preventDefault();
+      if (!validateForm()) return;
+
+      const form = document.getElementById('shadowForm');
+      const formData = new FormData(form);
+
+      fetch("https://formspree.io/f/mjkyzyvn", {
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(response => {
+        if (response.ok) {
+          document.getElementById('formArea').classList.add('hidden');
+          document.getElementById('submitSuccess').classList.remove('hidden');
+        } else {
+          alert("Der Schatten hat deine Nachricht nicht empfangen. Versuche es erneut.");
+        }
+      })
+      .catch(() => {
+        alert("Ein Fehler ist aufgetreten. Der Schatten schweigt.");
+      });
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       const intro = document.getElementById('intro');
       const introSound = document.getElementById('introSound');
       const mainContent = document.getElementById('mainContent');
-  
+
       introSound.volume = 0.4;
-  
+
       function startApp() {
         intro.classList.add('hide');
         introSound.play();
-  
+
         setTimeout(() => {
           intro.style.display = 'none';
           mainContent.style.display = 'flex';
           mainContent.classList.add('fadein');
         }, 6000);
       }
-  
+
       document.addEventListener('mousedown', function handler(event) {
         if (event.button === 0) {
           document.removeEventListener('mousedown', handler);
@@ -284,48 +315,6 @@
         }
       });
     });
-  function submitForm(event) {
-    event.preventDefault();
-    if (!validateForm()) return;
-  
-    const form = document.getElementById('shadowForm');
-    const formData = new FormData(form);
-  
-    fetch("https://formspree.io/f/mjkyzyvn", {
-      method: "POST",
-      body: formData,
-      headers: {
-        'Accept': 'application/json'
-      }
-    })
-    .then(response => {
-      if (response.ok) {
-        form.reset();
-        document.getElementById('formArea').classList.add('hidden');
-        document.getElementById('submitSuccess').classList.remove('hidden');
-      } else {
-        return response.json().then(data => {
-          throw new Error(data.error || "Unbekannter Fehler");
-        });
-      }
-    })
-    .catch(error => {
-      const textError = document.getElementById("textError");
-      textError.textContent = "Ein Fehler ist aufgetreten: " + error.message;
-      textError.classList.remove("hidden", "shake");
-      void textError.offsetWidth;
-      textError.classList.add("shake");
-    });
-  }
-
-  function returnToLogin() {
-    playClick();
-    document.getElementById('submitSuccess').classList.add('hidden');
-    document.getElementById('login').classList.remove('hidden');
-    document.getElementById('frageField').value = '';
-    document.getElementById('antwortField').value = '';
-  }
-    
   </script>
 </body>
 </html>
