@@ -40,11 +40,26 @@
       margin-bottom: 8px;
       font-style: italic;
     }
+    .errorBox {
+      display: none;
+      background: #220000;
+      color: #e0e0e0;
+      padding: 1rem;
+      margin: 1rem auto;
+      max-width: 400px;
+      border: 1px solid #550000;
+      text-align: center;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
 
   <h2>Shadow Garden - Zugang</h2>
+
+  <!-- Fehleranzeige -->
+  <div id="loginError" class="errorBox">⚠️ Der Schatten kennt dich nicht.</div>
+
   <div id="login">
     <p>Gib deinen Schattennamen ein:</p>
     <input type="password" id="shadowpass" placeholder="Schattenname">
@@ -52,22 +67,7 @@
   </div>
 
   <form id="shadowForm" class="hidden" method="POST" action="https://formspree.io/f/yourid" onsubmit="return validateForm()">
-    <input type="text" name="Schattenname" id="shadowname" readonly />
-    <div id="shadownameError" class="error hidden"></div>
-
-    <label for="typ">Was möchtest du senden?</label>
-    <select name="Typ" id="typ" onchange="toggleFields()">
-      <option value="">-- Bitte wählen --</option>
-      <option value="Frage">Frage</option>
-      <option value="Antwort">Antwort</option>
-    </select>
-    <div id="typError" class="error hidden"></div>
-
-    <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schattenfürsten..." class="hidden"></textarea>
-    <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
-    <div id="textError" class="error hidden"></div>
-
-    <button type="submit">Senden an den Schattenfürsten</button>
+    <!-- ... dein bestehendes Formular ... -->
   </form>
 
   <script>
@@ -75,12 +75,16 @@
 
     function verify() {
       const input = document.getElementById('shadowpass').value.trim();
+      const errorBox = document.getElementById('loginError');
+
       if (allowedNames.includes(input)) {
         document.getElementById('login').classList.add('hidden');
         document.getElementById('shadowForm').classList.remove('hidden');
         document.getElementById('shadowname').value = input;
+        errorBox.style.display = 'none'; // Fehlerbox ausblenden
       } else {
-        alert("Zugang verweigert. Der Schatten kennt dich nicht.");
+        errorBox.style.display = 'block';
+        errorBox.textContent = "⚠️ Der Schatten kennt dich nicht.";
       }
     }
 
@@ -124,6 +128,5 @@
       return valid;
     }
   </script>
-
 </body>
 </html>
