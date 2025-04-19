@@ -33,6 +33,13 @@
     button:hover {
       background: #333;
     }
+    .error {
+      color: #ff4444;
+      font-size: 0.9em;
+      margin-top: -6px;
+      margin-bottom: 8px;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -44,14 +51,19 @@
     <button onclick="verify()">Eintreten</button>
   </div>
 
-  <form id="shadowForm" class="hidden" method="POST" action="https://formspree.io/f/yourid">
+  <form id="shadowForm" class="hidden" method="POST" action="https://formspree.io/f/yourid" onsubmit="return validateForm()">
     <input type="text" name="Schattenname" id="shadowname" readonly />
-    <textarea name="Nachricht" rows="6" placeholder="Stelle deine Frage oder sende deine Antwort..." required></textarea>
+    <div id="shadownameError" class="error hidden"></div>
+
+    <textarea name="Nachricht" id="message" rows="6" placeholder="Stelle deine Frage oder sende deine Antwort..."></textarea>
+    <div id="messageError" class="error hidden"></div>
+
     <button type="submit">Senden an den Schattenfürsten</button>
   </form>
 
   <script>
     const allowedNames = ["GhostKnight", "DarkWhisper", "SilentFang", "CrowEyes"];
+
     function verify() {
       const input = document.getElementById('shadowpass').value.trim();
       if (allowedNames.includes(input)) {
@@ -61,6 +73,22 @@
       } else {
         alert("Zugang verweigert. Der Schatten kennt dich nicht.");
       }
+    }
+
+    function validateForm() {
+      let valid = true;
+      const message = document.getElementById("message").value.trim();
+      const messageError = document.getElementById("messageError");
+
+      if (!message) {
+        messageError.textContent = "Der Schatten kann keine Leere lesen. Fülle die Botschaft.";
+        messageError.classList.remove("hidden");
+        valid = false;
+      } else {
+        messageError.classList.add("hidden");
+      }
+
+      return valid;
     }
   </script>
 
