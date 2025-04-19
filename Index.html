@@ -103,10 +103,8 @@
 </head>
 <body>
 
-  <!-- Intro -->
   <div id="intro">Willkommen im Schatten...</div>
 
-  <!-- Soundeffekte -->
   <audio id="clickSound" src="./click.mp3" preload="auto"></audio>
   <audio id="introSound" src="./intro.mp3" preload="auto"></audio>
 
@@ -225,7 +223,6 @@
       document.getElementById('antwortField').value = '';
     }
 
-    // Intro & Start
     window.addEventListener('load', () => {
       document.getElementById("introSound").play();
       setTimeout(() => {
