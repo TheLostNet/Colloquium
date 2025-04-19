@@ -293,10 +293,9 @@
       })
       .then(response => {
         if (response.ok) {
-          // Optional: eigene Nachricht
           alert("Die Schatten haben deine Botschaft empfangen.");
           form.reset();
-          goBack(); // Zurück zum Login
+          goBack();
         } else {
           return response.json().then(data => {
             throw new Error(data.error || "Unbekannter Fehler");
