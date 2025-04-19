@@ -106,12 +106,10 @@
   </div>
 
   <script>
-    // Verschlüsselte Benutzernamen direkt im Code
     const allowedNames = [
-      "7[]x§~4;;8;+9_.a!-3ä2y<<w][x§~9_.", // GhostKnight
+      "7[]x§~4;;8;+9_.a!-3ä2y<<w][x§~9_.",
     ];
 
-    // Verschlüsselungstabelle
     const encryptTable = {
       'a': 'q//', 'b': 'r--', 'c': 's==', 'd': 't__', 'e': 'u^^', 'f': 'v{{', 'g': 'w][', 'h': 'x§~',
       'i': 'y<<', 'j': 'z>>', 'k': '0;;', 'l': '1;;', 'm': '2;;', 'n': '3ä2', 'o': '4;;', 'p': '5;;',
@@ -123,12 +121,10 @@
       '4': 'k;;', '5': 'l;;', '6': 'm;;', '7': 'n;;', '8': 'o;;', '9': 'p;;', '0': 'q;;'
     };
 
-    // Verschlüsselungsfunktion
     function encrypt(text) {
       return text.split('').map(char => encryptTable[char] || char).join('');
     }
 
-    // Verifikation der Benutzereingabe
     function verify() {
       const input = document.getElementById('shadowpass').value.trim();
       const entryType = document.getElementById('entryType').value;
