@@ -5,26 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shadow Garden Zugang</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       background-color: #0a0a0a;
       color: #e0e0e0;
       font-family: 'Courier New', monospace;
       margin: 0;
       padding: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      overflow: hidden;
     }
 
     .container {
-      width: 100%;
-      max-width: 450px;
-      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
       text-align: center;
+    }
+
+    .hidden {
+      display: none;
     }
 
     h2 {
@@ -38,7 +43,6 @@
       border: 1px solid #444;
       color: #e0e0e0;
       width: 100%;
-      box-sizing: border-box;
     }
 
     button {
@@ -55,12 +59,8 @@
     .error {
       color: #ff4444;
       font-size: 0.9em;
-      margin-top: 4px;
       font-style: italic;
-    }
-
-    .hidden {
-      display: none;
+      margin-top: 4px;
     }
 
     .shake {
@@ -75,19 +75,46 @@
       100% { transform: translateX(0); }
     }
 
-    .success {
-      color: #44ff44;
-      margin-top: 20px;
-      font-weight: bold;
+    #intro {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: #e0e0e0;
+      font-size: 1.8rem;
+      animation: fadeOut 4s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { opacity: 0; display: none; visibility: hidden; }
+    }
+
+    img.logo {
+      width: 120px;
+      height: auto;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h2>Shadow Garden - Zugang</h2>
+  <!-- Intro -->
+  <div id="intro">Willkommen im Schatten...</div>
+
+  <!-- Soundeffekte -->
+  <audio id="clickSound" src="click.mp3" preload="auto"></audio>
+  <audio id="introSound" src="intro.mp3" preload="auto"></audio>
+
+  <div class="container" id="mainContent" style="display: none;">
+    <img src="logo.png" alt="Shadow Garden Logo" class="logo" />
 
     <div id="login">
+      <h2>Shadow Garden - Zugang</h2>
       <p>Gib deinen Schattennamen ein und wähle deine Absicht:</p>
       <input type="password" id="shadowpass" placeholder="Schattenname" />
       <select id="entryType">
@@ -96,28 +123,28 @@
         <option value="Antwort">Ich bringe eine Antwort</option>
       </select>
       <button onclick="verify()">Eintreten</button>
-      <div id="loginError" class="error hidden"></div>
+      <div id="loginError" class="error hidden">⚠️ Zugang verweigert.</div>
     </div>
 
-    <form id="shadowForm" class="hidden" method="POST" onsubmit="return submitForm(event)">
-      <input type="text" name="Schattenname" id="shadowname" readonly />
-      <input type="hidden" name="Typ" id="hiddenTyp" />
+    <div id="formArea" class="hidden">
+      <form id="shadowForm" method="POST" action="https://formspree.io/f/YOUR_ID" onsubmit="return validateForm()">
+        <input type="text" name="Schattenname" id="shadowname" readonly />
+        <input type="hidden" name="Typ" id="hiddenTyp" />
 
-      <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schattenfürsten..." class="hidden"></textarea>
-      <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
-      <div id="textError" class="error hidden"></div>
+        <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schattenfürsten..." class="hidden"></textarea>
+        <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
+        <div id="textError" class="error hidden"></div>
 
-      <button type="submit">Senden an den Schattenfürsten</button>
-      <button type="button" onclick="goBack()">Zurück zur Auswahl</button>
-    </form>
-
-    <div id="successMessage" class="success hidden">Die Botschaft wurde in die Schatten gesendet.</div>
+        <button type="submit">Senden an den Schattenfürsten</button>
+      </form>
+      <button onclick="goBack()">⇦ Zurück zur Auswahl</button>
+    </div>
   </div>
 
   <script>
     const allowedNames = [
       "7[]x§~4;;8;+9_.a!-3ä2y<<w][x§~9_.",
-      "q//",
+      "q//"
     ];
 
     const encryptTable = {
@@ -135,59 +162,44 @@
       return text.split('').map(char => encryptTable[char] || char).join('');
     }
 
+    function playClick() {
+      document.getElementById('clickSound').play();
+    }
+
     function verify() {
+      playClick();
       const input = document.getElementById('shadowpass').value.trim();
       const entryType = document.getElementById('entryType').value;
       const errorBox = document.getElementById('loginError');
-
       const encryptedInput = encrypt(input);
 
       if (!allowedNames.includes(encryptedInput) || !entryType) {
         let message = "";
         if (!allowedNames.includes(encryptedInput)) {
           message = "⚠️ Der Schatten kennt dich nicht.";
-        } else if (!entryType) {
+        } else {
           message = "⚠️ Wähle deine Absicht: Frage oder Antwort.";
         }
         errorBox.textContent = message;
-        errorBox.classList.remove("hidden");
+        errorBox.classList.remove("hidden", "shake");
+        void errorBox.offsetWidth; // Reset animation
         errorBox.classList.add("shake");
-
-        setTimeout(() => {
-          errorBox.classList.remove("shake");
-        }, 500);
         return;
       }
 
-      // Setup form
       document.getElementById('login').classList.add('hidden');
-      document.getElementById('shadowForm').classList.remove('hidden');
+      document.getElementById('formArea').classList.remove('hidden');
       document.getElementById('shadowname').value = input;
       document.getElementById('hiddenTyp').value = entryType;
 
-      // Toggle visibility
-      if (entryType === "Frage") {
-        document.getElementById('frageField').classList.remove('hidden');
-        document.getElementById('antwortField').classList.add('hidden');
-      } else {
-        document.getElementById('antwortField').classList.remove('hidden');
-        document.getElementById('frageField').classList.add('hidden');
-      }
+      document.getElementById('frageField').classList.toggle('hidden', entryType !== "Frage");
+      document.getElementById('antwortField').classList.toggle('hidden', entryType !== "Antwort");
 
-      document.getElementById('loginError').classList.add("hidden");
+      errorBox.classList.add("hidden");
     }
 
-    function goBack() {
-      document.getElementById('shadowForm').reset();
-      document.getElementById('frageField').classList.add('hidden');
-      document.getElementById('antwortField').classList.add('hidden');
-      document.getElementById('shadowForm').classList.add('hidden');
-      document.getElementById('login').classList.remove('hidden');
-    }
-
-    async function submitForm(event) {
-      event.preventDefault();
-
+    function validateForm() {
+      playClick();
       const entryType = document.getElementById("hiddenTyp").value;
       const frage = document.getElementById("frageField").value.trim();
       const antwort = document.getElementById("antwortField").value.trim();
@@ -195,33 +207,32 @@
 
       if ((entryType === "Frage" && !frage) || (entryType === "Antwort" && !antwort)) {
         textError.textContent = "Der Schatten kann keine Leere lesen. Fülle das Feld aus.";
-        textError.classList.remove("hidden");
+        textError.classList.remove("hidden", "shake");
+        void textError.offsetWidth;
         textError.classList.add("shake");
-        setTimeout(() => textError.classList.remove("shake"), 500);
         return false;
       }
 
       textError.classList.add("hidden");
-
-      const formData = new FormData(event.target);
-      await fetch("https://formspree.io/f/mjkyzyvn", {
-        method: "POST",
-        body: formData,
-        headers: { Accept: "application/json" }
-      });
-
-      document.getElementById('shadowForm').classList.add('hidden');
-      document.getElementById('successMessage').classList.remove('hidden');
-
-      setTimeout(() => {
-        document.getElementById('successMessage').classList.add('hidden');
-        document.getElementById('login').classList.remove('hidden');
-        document.getElementById('shadowForm').reset();
-        document.getElementById('shadowpass').value = '';
-        document.getElementById('entryType').value = '';
-      }, 3000);
-      return false;
+      return true;
     }
+
+    function goBack() {
+      playClick();
+      document.getElementById('formArea').classList.add('hidden');
+      document.getElementById('login').classList.remove('hidden');
+      document.getElementById('frageField').value = '';
+      document.getElementById('antwortField').value = '';
+    }
+
+    // Intro & Start
+    window.addEventListener('load', () => {
+      document.getElementById("introSound").play();
+      setTimeout(() => {
+        document.getElementById('intro').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'flex';
+      }, 4000);
+    });
   </script>
 
 </body>
