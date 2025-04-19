@@ -76,22 +76,21 @@
     }
 
     #intro {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: black;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      color: #e0e0e0;
-      font-size: 1.8rem;
-      animation: fadeOut 4s ease forwards;
+      background: linear-gradient(145deg, #000000, #111111);
+      font-family: 'Cinzel', serif;
+      font-weight: bold;
+      letter-spacing: 2px;
     }
-
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { opacity: 0; display: none; visibility: hidden; }
+    
+    .intro-glow {
+      text-shadow: 0 0 10px #fff, 0 0 20px #aaa, 0 0 40px #444;
+      animation: fadeText 4s ease-in-out forwards;
+    }
+    
+    @keyframes fadeText {
+      0% { opacity: 0; transform: scale(0.8); }
+      30% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0; transform: scale(1); }
     }
 
     img.logo {
@@ -103,7 +102,10 @@
 </head>
 <body>
 
-  <div id="intro">Willkommen im Schatten...</div>
+  <div id="intro">
+    <div class="intro-glow">Willkommen im Schatten...</div>
+  </div>
+
 
   <audio id="clickSound" src="./click.mp3" preload="auto"></audio>
   <audio id="introSound" src="./intro.mp3" preload="auto"></audio>
@@ -140,6 +142,14 @@
   </div>
 
   <script>
+    let introPlayed = false;
+      document.addEventListener('click', () => {
+        if (!introPlayed) {
+          document.getElementById("introSound").play().catch(() => {});
+          introPlayed = true;
+        }
+      });
+
     const allowedNames = [
       "7[]x§~4;;8;+9_.a!-3ä2y<<w][x§~9_.",
       "q//"
@@ -161,8 +171,11 @@
     }
 
     function playClick() {
-      document.getElementById('clickSound').play();
+      const clickAudio = document.getElementById('clickSound');
+      clickAudio.currentTime = 0;
+      clickAudio.play();
     }
+
 
     function verify() {
       playClick();
