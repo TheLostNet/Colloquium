@@ -106,16 +106,52 @@
   </div>
 
   <script>
-    const allowedNames = ["GhostKnight", "DarkWhisper", "SilentFang", "CrowEyes"];
+    // Verschlüsselte Benutzernamen direkt im Code
+    const allowedNames = [
+      "1@!5)@!7[][::]4*(", // GhostKnight
+      "4*(!~?;/~[]",        // DarkWhisper
+      "i^^v{{",             // SilentFang
+      "6;;]^^9~2#]"         // CrowEyes
+    ];
 
+    // Verschlüsselungs- und Entschlüsselungslogik (wie vorher erklärt)
+    const encryptTable = {
+      'A': '1@!', 'B': '2#$', 'C': '3%&', 'D': '4*(', 'E': '5)@',
+      'F': '6+=', 'G': '7[]', 'H': '8{}', 'I': '9<>', 'J': '0|/',
+      'K': 'a!-', 'L': 'b@&', 'M': 'c$#', 'N': 'd%$', 'O': 'e^(',
+      'P': 'f)+', 'Q': 'g~[', 'R': 'h?;', 'S': 'i;_', 'T': 'j./',
+      'U': 'k~#', 'V': 'l*?', 'W': 'm^&', 'X': 'n#$', 'Y': 'o{}',
+      'Z': 'p|@', 'a': 'q//', 'b': 'r--', 'c': 's==', 'd': 't__',
+      'e': 'u^^', 'f': 'v{{', 'g': 'w[]', 'h': 'x~~', 'i': 'y<<',
+      'j': 'z>>', 'k': '0;;', 'l': '1;;', 'm': '2;;', 'n': '3;;',
+      'o': '4;;', 'p': '5;;', 'q': '6;;', 'r': '7;;', 's': '8;;',
+      't': '9;;', 'u': 'a;;', 'v': 'b;;', 'w': 'c;;', 'x': 'd;;',
+      'y': 'e;;', 'z': 'f;;', ' ': 'g;;',
+      '1': 'h;;', '2': 'i;;', '3': 'j;;', '4': 'k;;', '5': 'l;;',
+      '6': 'm;;', '7': 'n;;', '8': 'o;;', '9': 'p;;', '0': 'q;;'
+    };
+
+    // Umkehrung der Ersetzungstabelle
+    const decryptTable = Object.fromEntries(
+      Object.entries(encryptTable).map(([key, value]) => [value, key])
+    );
+
+    // Verschlüsselungsfunktion
+    function encrypt(text) {
+      return text.split('').map(char => encryptTable[char] || char).join('');
+    }
+
+    // Verifikation der Benutzereingabe
     function verify() {
       const input = document.getElementById('shadowpass').value.trim();
       const entryType = document.getElementById('entryType').value;
       const errorBox = document.getElementById('loginError');
 
-      if (!allowedNames.includes(input) || !entryType) {
+      const encryptedInput = encrypt(input);
+
+      if (!allowedNames.includes(encryptedInput) || !entryType) {
         let message = "";
-        if (!allowedNames.includes(input)) {
+        if (!allowedNames.includes(encryptedInput)) {
           message = "⚠️ Der Schatten kennt dich nicht.";
         } else if (!entryType) {
           message = "⚠️ Wähle deine Absicht: Frage oder Antwort.";
