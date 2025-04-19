@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shadow Garden Zugang</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       background-color: #0a0a0a;
@@ -28,13 +26,9 @@
       text-align: center;
     }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
 
-    h2 {
-      margin-bottom: 20px;
-    }
+    h2 { margin-bottom: 20px; }
 
     input, textarea, select, button {
       margin: 8px 0;
@@ -85,34 +79,53 @@
       justify-content: center;
       z-index: 9999;
       color: #e0e0e0;
-      font-size: 1.8rem;
-      transition: opacity 5s ease;
+      font-size: 2rem;
+      text-align: center;
+      animation: fadeOut 3s ease forwards;
+      animation-delay: 0s;
+      opacity: 1;
     }
 
-    #intro h1 {
-      margin-bottom: 20px;
-      font-size: 2.2rem;
+    #intro.hide {
+      animation: fadeOut 3s ease forwards;
     }
 
-    #clickPrompt {
-      font-size: 1.2rem;
-      opacity: 0.6;
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+
+    #clickHint {
       margin-top: 20px;
+      font-size: 1.2rem;
+      color: #888;
+      animation: blink 1.2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
 
     img.logo {
       width: 140px;
       height: auto;
       margin-bottom: 20px;
-      filter: drop-shadow(0 0 8px #888);
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+      animation: fadeIn 2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 <body>
 
-  <div id="intro" onclick="startExperience()">
-    <h1>Willkommen im Schatten...</h1>
-    <div id="clickPrompt">Klicke, um fortzufahren</div>
+  <div id="intro">
+    Willkommen im Schatten...
+    <div id="clickHint">Klicke, um fortzufahren</div>
   </div>
 
   <audio id="clickSound" src="./click.mp3" preload="auto"></audio>
@@ -138,11 +151,9 @@
       <form id="shadowForm" method="POST" action="https://formspree.io/f/mjkyzyvn" onsubmit="return validateForm()">
         <input type="text" name="Schattenname" id="shadowname" readonly />
         <input type="hidden" name="Typ" id="hiddenTyp" />
-
         <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schattenfürsten..." class="hidden"></textarea>
         <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
         <div id="textError" class="error hidden"></div>
-
         <button type="submit">Senden an den Schattenfürsten</button>
       </form>
       <button onclick="goBack()">⇦ Zurück zur Auswahl</button>
@@ -170,20 +181,11 @@
       return text.split('').map(char => encryptTable[char] || char).join('');
     }
 
-    // Sound mit Volume & FadeIn
     function playClick() {
-      const click = document.getElementById("clickSound");
-      click.volume = 0.3;
-      click.play();
-      let vol = 0;
-      const interval = setInterval(() => {
-        if (vol < 1) {
-          vol += 0.1;
-          click.volume = Math.min(1, vol);
-        } else {
-          clearInterval(interval);
-        }
-      }, 30);
+      const clickSound = document.getElementById('clickSound');
+      clickSound.volume = 0.3;
+      clickSound.currentTime = 0;
+      clickSound.play();
     }
 
     function verify() {
@@ -194,12 +196,9 @@
       const encryptedInput = encrypt(input);
 
       if (!allowedNames.includes(encryptedInput) || !entryType) {
-        let message = "";
-        if (!allowedNames.includes(encryptedInput)) {
-          message = "⚠️ Der Schatten kennt dich nicht.";
-        } else {
-          message = "⚠️ Wähle deine Absicht: Frage oder Antwort.";
-        }
+        let message = !allowedNames.includes(encryptedInput)
+          ? "⚠️ Der Schatten kennt dich nicht."
+          : "⚠️ Wähle deine Absicht: Frage oder Antwort.";
         errorBox.textContent = message;
         errorBox.classList.remove("hidden", "shake");
         void errorBox.offsetWidth;
@@ -214,7 +213,6 @@
 
       document.getElementById('frageField').classList.toggle('hidden', entryType !== "Frage");
       document.getElementById('antwortField').classList.toggle('hidden', entryType !== "Antwort");
-
       errorBox.classList.add("hidden");
     }
 
@@ -245,21 +243,26 @@
       document.getElementById('antwortField').value = '';
     }
 
-    function startExperience() {
-      const intro = document.getElementById("intro");
-      const main = document.getElementById("mainContent");
-      const introSound = document.getElementById("introSound");
-
+    window.addEventListener('DOMContentLoaded', () => {
+      const intro = document.getElementById('intro');
+      const introSound = document.getElementById('introSound');
       introSound.volume = 0.4;
-      introSound.play();
-      intro.style.opacity = "0";
 
-      setTimeout(() => {
-        intro.style.display = "none";
-        main.style.display = "flex";
-      }, 1500);
-    }
+      function startApp() {
+        intro.classList.add('hide');
+        setTimeout(() => {
+          intro.style.display = 'none';
+          document.getElementById('mainContent').style.display = 'flex';
+        }, 3000);
+        introSound.play();
+      }
+
+      // Erst nach Interaktion starten (wegen Browser-Richtlinien)
+      document.addEventListener('click', function handler() {
+        document.removeEventListener('click', handler);
+        startApp();
+      });
+    });
   </script>
-
 </body>
 </html>
