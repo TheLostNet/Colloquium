@@ -16,7 +16,7 @@
       height: 100vh;
     }
     .hidden { display: none; }
-    input, textarea, button {
+    input, textarea, select, button {
       margin: 8px 0;
       padding: 10px;
       background: #111;
@@ -55,8 +55,17 @@
     <input type="text" name="Schattenname" id="shadowname" readonly />
     <div id="shadownameError" class="error hidden"></div>
 
-    <textarea name="Nachricht" id="message" rows="6" placeholder="Stelle deine Frage oder sende deine Antwort..."></textarea>
-    <div id="messageError" class="error hidden"></div>
+    <label for="typ">Was möchtest du senden?</label>
+    <select name="Typ" id="typ" onchange="toggleFields()">
+      <option value="">-- Bitte wählen --</option>
+      <option value="Frage">Frage</option>
+      <option value="Antwort">Antwort</option>
+    </select>
+    <div id="typError" class="error hidden"></div>
+
+    <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schattenfürsten..." class="hidden"></textarea>
+    <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
+    <div id="textError" class="error hidden"></div>
 
     <button type="submit">Senden an den Schattenfürsten</button>
   </form>
@@ -75,17 +84,41 @@
       }
     }
 
+    function toggleFields() {
+      const type = document.getElementById('typ').value;
+      document.getElementById('frageField').classList.add('hidden');
+      document.getElementById('antwortField').classList.add('hidden');
+
+      if (type === "Frage") {
+        document.getElementById('frageField').classList.remove('hidden');
+      } else if (type === "Antwort") {
+        document.getElementById('antwortField').classList.remove('hidden');
+      }
+    }
+
     function validateForm() {
       let valid = true;
-      const message = document.getElementById("message").value.trim();
-      const messageError = document.getElementById("messageError");
+      const type = document.getElementById("typ").value;
+      const frage = document.getElementById("frageField").value.trim();
+      const antwort = document.getElementById("antwortField").value.trim();
 
-      if (!message) {
-        messageError.textContent = "Der Schatten kann keine Leere lesen. Fülle die Botschaft.";
-        messageError.classList.remove("hidden");
+      const typError = document.getElementById("typError");
+      const textError = document.getElementById("textError");
+
+      if (!type) {
+        typError.textContent = "Wähle, was du senden willst: Frage oder Antwort.";
+        typError.classList.remove("hidden");
         valid = false;
       } else {
-        messageError.classList.add("hidden");
+        typError.classList.add("hidden");
+      }
+
+      if ((type === "Frage" && !frage) || (type === "Antwort" && !antwort)) {
+        textError.textContent = "Der Schatten kann keine Leere lesen. Fülle das Feld aus.";
+        textError.classList.remove("hidden");
+        valid = false;
+      } else {
+        textError.classList.add("hidden");
       }
 
       return valid;
