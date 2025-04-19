@@ -127,7 +127,6 @@
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
     }
-
   </style>
 </head>
 <body>
@@ -308,12 +307,7 @@
         }, 6000);
       }
 
-      document.addEventListener('mousedown', function handler(event) {
-        if (event.button === 0) {
-          document.removeEventListener('mousedown', handler);
-          startApp();
-        }
-      });
+      intro.addEventListener('click', startApp);
     });
   </script>
 </body>
