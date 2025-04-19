@@ -85,7 +85,7 @@
     }
     
     #intro.hide {
-      animation: fadeOut 3s ease forwards;
+      animation: fadeOut 6s ease forwards;
     }
 
 
@@ -256,9 +256,13 @@
         introSound.play();
       }
     
-      document.addEventListener('click', function handler() {
-        document.removeEventListener('click', handler);
-        startApp();
+      document.addEventListener('mousedown', function handler(event) {
+        if (event.button === 0) { // Nur Linksklick
+          document.removeEventListener('mousedown', handler);
+          startApp();
+        }
+      });
+
       });
     });
 
