@@ -9,14 +9,28 @@
       background-color: #0a0a0a;
       color: #e0e0e0;
       font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
+      text-align: center;
     }
-    .hidden { display: none; }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
     input, textarea, select, button {
       margin: 8px 0;
       padding: 10px;
@@ -24,22 +38,29 @@
       border: 1px solid #444;
       color: #e0e0e0;
       width: 100%;
-      max-width: 400px;
+      box-sizing: border-box;
     }
+
     button {
       cursor: pointer;
       background: #222;
       border: 1px solid #666;
+      transition: background 0.3s ease;
     }
+
     button:hover {
       background: #333;
     }
+
     .error {
       color: #ff4444;
       font-size: 0.9em;
       margin-top: 4px;
       font-style: italic;
-      text-align: center;
+    }
+
+    .hidden {
+      display: none;
     }
 
     .shake {
@@ -57,31 +78,32 @@
 </head>
 <body>
 
-  <h2>Shadow Garden - Zugang</h2>
-  <div id="login">
-    <p>Gib deinen Schattennamen ein und wähle deine Absicht:</p>
-    <input type="password" id="shadowpass" placeholder="Schattenname">
-    
-    <select id="entryType">
-      <option value="">-- Absicht wählen --</option>
-      <option value="Frage">Ich habe eine Frage</option>
-      <option value="Antwort">Ich bringe eine Antwort</option>
-    </select>
-    
-    <button onclick="verify()">Eintreten</button>
-    <div id="loginError" class="error hidden">⚠️ Zugang verweigert.</div>
+  <div class="container">
+    <h2>Shadow Garden - Zugang</h2>
+
+    <div id="login">
+      <p>Gib deinen Schattennamen ein und wähle deine Absicht:</p>
+      <input type="password" id="shadowpass" placeholder="Schattenname" />
+      <select id="entryType">
+        <option value="">-- Absicht wählen --</option>
+        <option value="Frage">Ich habe eine Frage</option>
+        <option value="Antwort">Ich bringe eine Antwort</option>
+      </select>
+      <button onclick="verify()">Eintreten</button>
+      <div id="loginError" class="error hidden">⚠️ Zugang verweigert.</div>
+    </div>
+
+    <form id="shadowForm" class="hidden" method="POST" action="https://formspree.io/f/yourid" onsubmit="return validateForm()">
+      <input type="text" name="Schattenname" id="shadowname" readonly />
+      <input type="hidden" name="Typ" id="hiddenTyp" />
+
+      <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schattenfürsten..." class="hidden"></textarea>
+      <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
+      <div id="textError" class="error hidden"></div>
+
+      <button type="submit">Senden an den Schattenfürsten</button>
+    </form>
   </div>
-
-  <form id="shadowForm" class="hidden" method="POST" action="https://formspree.io/f/yourid" onsubmit="return validateForm()">
-    <input type="text" name="Schattenname" id="shadowname" readonly />
-    <input type="hidden" name="Typ" id="hiddenTyp" />
-
-    <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schattenfürsten..." class="hidden"></textarea>
-    <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
-    <div id="textError" class="error hidden"></div>
-
-    <button type="submit">Senden an den Schattenfürsten</button>
-  </form>
 
   <script>
     const allowedNames = ["GhostKnight", "DarkWhisper", "SilentFang", "CrowEyes"];
@@ -90,8 +112,6 @@
       const input = document.getElementById('shadowpass').value.trim();
       const entryType = document.getElementById('entryType').value;
       const errorBox = document.getElementById('loginError');
-
-      const loginBox = document.getElementById('login');
 
       if (!allowedNames.includes(input) || !entryType) {
         let message = "";
@@ -110,7 +130,6 @@
         return;
       }
 
-      // Erfolgreich
       document.getElementById('login').classList.add('hidden');
       document.getElementById('shadowForm').classList.remove('hidden');
       document.getElementById('shadowname').value = input;
@@ -145,5 +164,6 @@
       return true;
     }
   </script>
+
 </body>
 </html>
