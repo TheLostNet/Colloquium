@@ -128,8 +128,6 @@
       return text.split('').map(char => encryptTable[char] || char).join('');
     }
 
-    console.log(encrypt("GhostKnight"));
-
     // Verifikation der Benutzereingabe
     function verify() {
       const input = document.getElementById('shadowpass').value.trim();
