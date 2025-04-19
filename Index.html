@@ -169,11 +169,12 @@
     </div>
   </div>
   
-  <div id="successMessage" class="hidden">
-    <h2>Die Schatten haben deine Botschaft empfangen.</h2>
-    <p>Du kannst nun zurückkehren… oder auf eine Antwort warten.</p>
+  <div id="submitSuccess" class="hidden">
+    <h2>🕯️ Deine Botschaft wurde dem Schatten übermittelt.</h2>
+    <p>Der Schattenfürst hat deine Worte empfangen. Er wird antworten... wenn er es für nötig hält.</p>
     <button onclick="returnToLogin()">⇦ Zurück zur Anmeldung</button>
   </div>
+
 
   <script>
     const allowedNames = [
@@ -301,7 +302,7 @@
       if (response.ok) {
         form.reset();
         document.getElementById('formArea').classList.add('hidden');
-        document.getElementById('successMessage').classList.remove('hidden');
+        document.getElementById('submitSuccess').classList.remove('hidden');
       } else {
         return response.json().then(data => {
           throw new Error(data.error || "Unbekannter Fehler");
@@ -316,14 +317,15 @@
       textError.classList.add("shake");
     });
   }
+
   function returnToLogin() {
     playClick();
-    document.getElementById('successMessage').classList.add('hidden');
+    document.getElementById('submitSuccess').classList.add('hidden');
     document.getElementById('login').classList.remove('hidden');
+    document.getElementById('frageField').value = '';
+    document.getElementById('antwortField').value = '';
   }
-
-
-
+    
   </script>
 </body>
 </html>
