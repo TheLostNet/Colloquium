@@ -111,7 +111,7 @@
       "7[]8{}e^(i;_j./a!-d%$9<>7[]8{}j./", // GhostKnight
     ];
 
-    // Verschlüsselungs- und Entschlüsselungslogik (wie vorher erklärt)
+    // Verschlüsselungs- und Entschlüsselungslogik
     const encryptTable = {
       'A': '1@!', 'B': '2#$', 'C': '3%&', 'D': '4*(', 'E': '5)@',
       'F': '6+=', 'G': '7[]', 'H': '8{}', 'I': '9<>', 'J': '0|/',
@@ -133,9 +133,9 @@
       Object.entries(encryptTable).map(([key, value]) => [value, key])
     );
 
-    // Verschlüsselungsfunktion
+    // Verschlüsselungsfunktion (mit Kleinbuchstaben)
     function encrypt(text) {
-      return text.split('').map(char => encryptTable[char] || char).join('');
+      return text.toLowerCase().split('').map(char => encryptTable[char] || char).join('');
     }
 
     // Verifikation der Benutzereingabe
