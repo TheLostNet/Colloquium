@@ -14,6 +14,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
     }
     .hidden { display: none; }
     input, textarea, select, button {
@@ -36,38 +37,50 @@
     .error {
       color: #ff4444;
       font-size: 0.9em;
-      margin-top: -6px;
-      margin-bottom: 8px;
+      margin-top: 4px;
       font-style: italic;
-    }
-    .errorBox {
-      display: none;
-      background: #220000;
-      color: #e0e0e0;
-      padding: 1rem;
-      margin: 1rem auto;
-      max-width: 400px;
-      border: 1px solid #550000;
       text-align: center;
-      font-style: italic;
+    }
+
+    .shake {
+      animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
     }
   </style>
 </head>
 <body>
 
   <h2>Shadow Garden - Zugang</h2>
-
-  <!-- Fehleranzeige -->
-  <div id="loginError" class="errorBox">⚠️ Der Schatten kennt dich nicht.</div>
-
   <div id="login">
-    <p>Gib deinen Schattennamen ein:</p>
+    <p>Gib deinen Schattennamen ein und wähle deine Absicht:</p>
     <input type="password" id="shadowpass" placeholder="Schattenname">
+    
+    <select id="entryType">
+      <option value="">-- Absicht wählen --</option>
+      <option value="Frage">Ich habe eine Frage</option>
+      <option value="Antwort">Ich bringe eine Antwort</option>
+    </select>
+    
     <button onclick="verify()">Eintreten</button>
+    <div id="loginError" class="error hidden">⚠️ Zugang verweigert.</div>
   </div>
 
   <form id="shadowForm" class="hidden" method="POST" action="https://formspree.io/f/yourid" onsubmit="return validateForm()">
-    <!-- ... dein bestehendes Formular ... -->
+    <input type="text" name="Schattenname" id="shadowname" readonly />
+    <input type="hidden" name="Typ" id="hiddenTyp" />
+
+    <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schattenfürsten..." class="hidden"></textarea>
+    <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
+    <div id="textError" class="error hidden"></div>
+
+    <button type="submit">Senden an den Schattenfürsten</button>
   </form>
 
   <script>
@@ -75,57 +88,61 @@
 
     function verify() {
       const input = document.getElementById('shadowpass').value.trim();
+      const entryType = document.getElementById('entryType').value;
       const errorBox = document.getElementById('loginError');
 
-      if (allowedNames.includes(input)) {
-        document.getElementById('login').classList.add('hidden');
-        document.getElementById('shadowForm').classList.remove('hidden');
-        document.getElementById('shadowname').value = input;
-        errorBox.style.display = 'none'; // Fehlerbox ausblenden
-      } else {
-        errorBox.style.display = 'block';
-        errorBox.textContent = "⚠️ Der Schatten kennt dich nicht.";
+      const loginBox = document.getElementById('login');
+
+      if (!allowedNames.includes(input) || !entryType) {
+        let message = "";
+        if (!allowedNames.includes(input)) {
+          message = "⚠️ Der Schatten kennt dich nicht.";
+        } else if (!entryType) {
+          message = "⚠️ Wähle deine Absicht: Frage oder Antwort.";
+        }
+        errorBox.textContent = message;
+        errorBox.classList.remove("hidden");
+        errorBox.classList.add("shake");
+
+        setTimeout(() => {
+          errorBox.classList.remove("shake");
+        }, 500);
+        return;
       }
-    }
 
-    function toggleFields() {
-      const type = document.getElementById('typ').value;
-      document.getElementById('frageField').classList.add('hidden');
-      document.getElementById('antwortField').classList.add('hidden');
+      // Erfolgreich
+      document.getElementById('login').classList.add('hidden');
+      document.getElementById('shadowForm').classList.remove('hidden');
+      document.getElementById('shadowname').value = input;
+      document.getElementById('hiddenTyp').value = entryType;
 
-      if (type === "Frage") {
+      if (entryType === "Frage") {
         document.getElementById('frageField').classList.remove('hidden');
-      } else if (type === "Antwort") {
+      } else if (entryType === "Antwort") {
         document.getElementById('antwortField').classList.remove('hidden');
       }
+
+      errorBox.classList.add("hidden");
     }
 
     function validateForm() {
-      let valid = true;
-      const type = document.getElementById("typ").value;
+      const entryType = document.getElementById("hiddenTyp").value;
       const frage = document.getElementById("frageField").value.trim();
       const antwort = document.getElementById("antwortField").value.trim();
-
-      const typError = document.getElementById("typError");
       const textError = document.getElementById("textError");
 
-      if (!type) {
-        typError.textContent = "Wähle, was du senden willst: Frage oder Antwort.";
-        typError.classList.remove("hidden");
-        valid = false;
-      } else {
-        typError.classList.add("hidden");
-      }
-
-      if ((type === "Frage" && !frage) || (type === "Antwort" && !antwort)) {
+      if ((entryType === "Frage" && !frage) || (entryType === "Antwort" && !antwort)) {
         textError.textContent = "Der Schatten kann keine Leere lesen. Fülle das Feld aus.";
         textError.classList.remove("hidden");
-        valid = false;
-      } else {
-        textError.classList.add("hidden");
+        textError.classList.add("shake");
+        setTimeout(() => {
+          textError.classList.remove("shake");
+        }, 500);
+        return false;
       }
 
-      return valid;
+      textError.classList.add("hidden");
+      return true;
     }
   </script>
 </body>
