@@ -117,6 +117,17 @@
       from { opacity: 0; transform: scale(0.9); }
       to { opacity: 1; transform: scale(1); }
     }
+
+    #mainContent.fadein {
+      animation: contentFadeIn 1.5s ease forwards;
+      opacity: 0;
+    }
+    
+    @keyframes contentFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
   </style>
 </head>
 <body>
@@ -163,7 +174,7 @@
       "7[]x§~4;;8;+9_.a!-3ä2y<<w][x§~9_.",
       "q//"
     ];
-
+  
     const encryptTable = {
       'a': 'q//', 'b': 'r--', 'c': 's==', 'd': 't__', 'e': 'u^^', 'f': 'v{{', 'g': 'w][', 'h': 'x§~',
       'i': 'y<<', 'j': 'z>>', 'k': '0;;', 'l': '1;;', 'm': '2;;', 'n': '3ä2', 'o': '4;;', 'p': '5;;',
@@ -174,25 +185,25 @@
       'V': 'l*?', 'W': 'm^&', 'X': 'n#$', 'Y': 'o{}', 'Z': 'p|@', '1': 'h;;', '2': 'i;;', '3': 'j;;',
       '4': 'k;;', '5': 'l;;', '6': 'm;;', '7': 'n;;', '8': 'o;;', '9': 'p;;', '0': 'q;;'
     };
-
+  
     function encrypt(text) {
       return text.split('').map(char => encryptTable[char] || char).join('');
     }
-
+  
     function playClick() {
       const clickSound = document.getElementById('clickSound');
       clickSound.volume = 0.3;
       clickSound.currentTime = 0;
       clickSound.play();
     }
-
+  
     function verify() {
       playClick();
       const input = document.getElementById('shadowpass').value.trim();
       const entryType = document.getElementById('entryType').value;
       const errorBox = document.getElementById('loginError');
       const encryptedInput = encrypt(input);
-
+  
       if (!allowedNames.includes(encryptedInput) || !entryType) {
         let message = !allowedNames.includes(encryptedInput)
           ? "⚠️ Der Schatten kennt dich nicht."
@@ -203,24 +214,24 @@
         errorBox.classList.add("shake");
         return;
       }
-
+  
       document.getElementById('login').classList.add('hidden');
       document.getElementById('formArea').classList.remove('hidden');
       document.getElementById('shadowname').value = input;
       document.getElementById('hiddenTyp').value = entryType;
-
+  
       document.getElementById('frageField').classList.toggle('hidden', entryType !== "Frage");
       document.getElementById('antwortField').classList.toggle('hidden', entryType !== "Antwort");
       errorBox.classList.add("hidden");
     }
-
+  
     function validateForm() {
       playClick();
       const entryType = document.getElementById("hiddenTyp").value;
       const frage = document.getElementById("frageField").value.trim();
       const antwort = document.getElementById("antwortField").value.trim();
       const textError = document.getElementById("textError");
-
+  
       if ((entryType === "Frage" && !frage) || (entryType === "Antwort" && !antwort)) {
         textError.textContent = "Der Schatten kann keine Leere lesen. Fülle das Feld aus.";
         textError.classList.remove("hidden", "shake");
@@ -228,11 +239,11 @@
         textError.classList.add("shake");
         return false;
       }
-
+  
       textError.classList.add("hidden");
       return true;
     }
-
+  
     function goBack() {
       playClick();
       document.getElementById('formArea').classList.add('hidden');
@@ -240,28 +251,33 @@
       document.getElementById('frageField').value = '';
       document.getElementById('antwortField').value = '';
     }
-
+  
     window.addEventListener('DOMContentLoaded', () => {
       const intro = document.getElementById('intro');
       const introSound = document.getElementById('introSound');
+      const mainContent = document.getElementById('mainContent');
+  
       introSound.volume = 0.4;
-
+  
       function startApp() {
         intro.classList.add('hide');
+        introSound.play();
+  
         setTimeout(() => {
           intro.style.display = 'none';
-          document.getElementById('mainContent').style.display = 'flex';
-        }, 3000);
-        introSound.play();
+          mainContent.style.display = 'flex';
+          mainContent.classList.add('fadein');
+        }, 6000);
       }
-
+  
       document.addEventListener('mousedown', function handler(event) {
-        if (event.button === 0) { // Nur Linksklick
+        if (event.button === 0) {
           document.removeEventListener('mousedown', handler);
           startApp();
         }
       });
     });
   </script>
+
 </body>
 </html>
