@@ -157,7 +157,7 @@
     </div>
 
     <div id="formArea" class="hidden">
-      <form id="shadowForm" method="POST" action="https://formspree.io/f/mjkyzyvn" onsubmit="return validateForm()">
+      <form id="shadowForm" method="POST" onsubmit="submitForm(event)">
         <input type="text" name="Schattenname" id="shadowname" readonly />
         <input type="hidden" name="Typ" id="hiddenTyp" />
         <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schattenfürsten..." class="hidden"></textarea>
@@ -277,7 +277,37 @@
         }
       });
     });
-  </script>
+    function submitForm(event) {
+      event.preventDefault();
+      if (!validateForm()) return;
+    
+      const form = document.getElementById('shadowForm');
+      const formData = new FormData(form);
+    
+      fetch("https://formspree.io/f/mjkyzyvn", {
+        method: "POST",
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          // Optional: eigene Nachricht
+          alert("Die Schatten haben deine Botschaft empfangen.");
+          form.reset();
+          goBack(); // Zurück zum Login
+        } else {
+          return response.json().then(data => {
+            throw new Error(data.error || "Unbekannter Fehler");
+          });
+        }
+      })
+      .catch(error => {
+        alert("Ein Fehler ist aufgetreten: " + error.message);
+      });
+    }
 
+  </script>
 </body>
 </html>
