@@ -6,110 +6,70 @@
   <title>Shadow Garden Zugang</title>
   <style>
     * {
-      box-sizing: border-box;
-    }
-
-    body {
-      background-color: #0a0a0a;
-      color: #e0e0e0;
-      font-family: 'Courier New', monospace;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    body {
+      background-color: #0a0a0a;
+      color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       overflow: hidden;
     }
-
     .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      padding: 20px;
       text-align: center;
       opacity: 0;
-      transition: opacity 1s ease;
+      transition: opacity 2s ease-in-out;
     }
-
-    .hidden {
-      display: none;
-    }
-
-    h2 {
-      margin-bottom: 20px;
-    }
-
-    input, textarea, select, button {
-      margin: 8px 0;
-      padding: 10px;
-      background: #111;
-      border: 1px solid #444;
-      color: #e0e0e0;
-      width: 100%;
-    }
-
-    button {
-      cursor: pointer;
-      background: #222;
-      border: 1px solid #666;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background: #333;
-    }
-
-    .error {
-      color: #ff4444;
-      font-size: 0.9em;
-      font-style: italic;
-      margin-top: 4px;
-    }
-
-    .shake {
-      animation: shake 0.4s;
-    }
-
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      50% { transform: translateX(5px); }
-      75% { transform: translateX(-5px); }
-      100% { transform: translateX(0); }
-    }
-
-    #intro {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: black;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      color: #e0e0e0;
-      font-size: 2rem;
-      animation: fadeOut 4s ease forwards;
-    }
-
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      90% { opacity: 1; }
-      100% {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
-    }
-
-    img.logo {
+    .logo {
       width: 150px;
       height: auto;
       margin-bottom: 30px;
-      filter: drop-shadow(0 0 10px #aaa);
-      transition: transform 0.3s ease;
+      filter: drop-shadow(0 0 10px #fff3);
     }
-
-    img.logo:hover {
-      transform: scale(1.05);
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    p {
+      margin-bottom: 20px;
+    }
+    input, select, button {
+      background: #111;
+      border: 1px solid #555;
+      color: #f5f5f5;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+    }
+    button {
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #222;
+    }
+    #intro {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      animation: fadeOut 4s forwards;
+      animation-delay: 0.5s;
+    }
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; display: none; }
     }
   </style>
 </head>
@@ -117,37 +77,22 @@
 
   <div id="intro">Willkommen im Schatten...</div>
 
-  <audio id="clickSound" src="./click.mp3" preload="auto"></audio>
   <audio id="introSound" src="./intro.mp3" preload="auto"></audio>
+  <audio id="clickSound" src="./click.mp3" preload="auto"></audio>
 
   <div class="container" id="mainContent">
     <img src="./logo.png" alt="Shadow Garden Logo" class="logo" />
-
-    <div id="login">
-      <h2>Shadow Garden - Zugang</h2>
-      <p>Gib deinen Schattennamen ein und wähle deine Absicht:</p>
-      <input type="password" id="shadowpass" placeholder="Schattenname" />
-      <select id="entryType">
-        <option value="">-- Absicht wählen --</option>
-        <option value="Frage">Ich habe eine Frage</option>
-        <option value="Antwort">Ich bringe eine Antwort</option>
+    <h1>Zugang zum Shadow Garden</h1>
+    <p>Deine Entscheidung erwartet dich...</p>
+    <input type="text" id="name" placeholder="Dein Codename...">
+    <button onclick="verify()">Weiter</button>
+    <div id="formSection" style="display:none; margin-top: 20px;">
+      <select id="choice">
+        <option value="question">Frage</option>
+        <option value="answer">Antwort</option>
       </select>
-      <button onclick="verify()">Eintreten</button>
-      <div id="loginError" class="error hidden">⚠️ Zugang verweigert.</div>
-    </div>
-
-    <div id="formArea" class="hidden">
-      <form id="shadowForm" method="POST" action="https://formspree.io/f/mjkyzyvn" onsubmit="return validateForm()">
-        <input type="text" name="Schattenname" id="shadowname" readonly />
-        <input type="hidden" name="Typ" id="hiddenTyp" />
-
-        <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schattenfürsten..." class="hidden"></textarea>
-        <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
-        <div id="textError" class="error hidden"></div>
-
-        <button type="submit">Senden an den Schattenfürsten</button>
-      </form>
-      <button onclick="goBack()">⇦ Zurück zur Auswahl</button>
+      <button onclick="validateForm()">Absenden</button>
+      <button onclick="goBack()">Zurück</button>
     </div>
   </div>
 
@@ -158,94 +103,92 @@
     ];
 
     const encryptTable = {
-      'a': 'q//', 'b': 'r--', 'c': 's==', 'd': 't__', 'e': 'u^^', 'f': 'v{{', 'g': 'w][', 'h': 'x§~',
-      'i': 'y<<', 'j': 'z>>', 'k': '0;;', 'l': '1;;', 'm': '2;;', 'n': '3ä2', 'o': '4;;', 'p': '5;;',
-      'q': '6;;', 'r': '7;;', 's': '8;+', 't': '9_.', 'u': 'a;;', 'v': 'b;;', 'w': 'c;;', 'x': 'd;;',
-      'y': 'e;;', 'z': 'f;;', ' ': 'g;;','A': '1@!', 'B': '2#$', 'C': '3%&', 'D': '4*(', 'E': '5)@',
-      'F': '6+=', 'G': '7[]', 'H': '8{}', 'I': '9<>', 'J': '0|/', 'K': 'a!-', 'L': 'b@&', 'M': 'c$#',
-      'N': 'd%$', 'O': 'e^(', 'P': 'f)+', 'Q': 'g~[', 'R': 'h?;', 'S': 'i;_', 'T': 'j./', 'U': 'k~#',
-      'V': 'l*?', 'W': 'm^&', 'X': 'n#$', 'Y': 'o{}', 'Z': 'p|@', '1': 'h;;', '2': 'i;;', '3': 'j;;',
-      '4': 'k;;', '5': 'l;;', '6': 'm;;', '7': 'n;;', '8': 'o;;', '9': 'p;;', '0': 'q;;'
+      a: "1", b: "2", c: "3", d: "4", e: "5", f: "6", g: "7",
+      h: "8", i: "9", j: ";", k: "+", l: "-", m: ".", n: "/",
+      o: "=", p: "?", q: "@", r: "[", s: "]", t: "^", u: "_",
+      v: "`", w: "~", x: "<", y: ">", z: "!", 
+      A: "a", B: "b", C: "c", D: "d", E: "e", F: "f", G: "g",
+      H: "h", I: "i", J: "j", K: "k", L: "l", M: "m", N: "n",
+      O: "o", P: "p", Q: "q", R: "r", S: "s", T: "t", U: "u",
+      V: "v", W: "w", X: "x", Y: "y", Z: "z"
     };
 
     function encrypt(text) {
       return text.split('').map(char => encryptTable[char] || char).join('');
     }
 
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let introGain = audioContext.createGain();
+
+    function playSoundWithFade(audioElement, gainNode, fadeIn = 0.5, fadeOut = 0.5) {
+      const source = audioContext.createMediaElementSource(audioElement);
+      source.connect(gainNode).connect(audioContext.destination);
+
+      const now = audioContext.currentTime;
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(1, now + fadeIn);
+
+      audioElement.currentTime = 0;
+      audioElement.play();
+
+      if (fadeOut > 0) {
+        const duration = audioElement.duration || 2;
+        gainNode.gain.setValueAtTime(1, now + duration - fadeOut);
+        gainNode.gain.linearRampToValueAtTime(0, now + duration);
+      }
+    }
+
     function playClick() {
-      const click = document.getElementById('clickSound');
-      click.currentTime = 0;
-      click.play();
+      const audio = document.getElementById("clickSound").cloneNode();
+      const tempSource = audioContext.createMediaElementSource(audio);
+      const tempGain = audioContext.createGain();
+      tempSource.connect(tempGain).connect(audioContext.destination);
+      const now = audioContext.currentTime;
+
+      tempGain.gain.setValueAtTime(0, now);
+      tempGain.gain.linearRampToValueAtTime(1, now + 0.05);
+      tempGain.gain.linearRampToValueAtTime(0, now + 0.4);
+
+      audio.play();
     }
 
     function verify() {
       playClick();
-      const input = document.getElementById('shadowpass').value.trim();
-      const entryType = document.getElementById('entryType').value;
-      const errorBox = document.getElementById('loginError');
-      const encryptedInput = encrypt(input);
-
-      if (!allowedNames.includes(encryptedInput) || !entryType) {
-        let message = "";
-        if (!allowedNames.includes(encryptedInput)) {
-          message = "⚠️ Der Schatten kennt dich nicht.";
-        } else {
-          message = "⚠️ Wähle deine Absicht: Frage oder Antwort.";
-        }
-        errorBox.textContent = message;
-        errorBox.classList.remove("hidden", "shake");
-        void errorBox.offsetWidth;
-        errorBox.classList.add("shake");
-        return;
+      const nameInput = document.getElementById("name").value.trim();
+      const encrypted = encrypt(nameInput);
+      if (allowedNames.includes(encrypted)) {
+        document.getElementById("formSection").style.display = "block";
+      } else {
+        alert("Zugriff verweigert.");
       }
-
-      document.getElementById('login').classList.add('hidden');
-      document.getElementById('formArea').classList.remove('hidden');
-      document.getElementById('shadowname').value = input;
-      document.getElementById('hiddenTyp').value = entryType;
-
-      document.getElementById('frageField').classList.toggle('hidden', entryType !== "Frage");
-      document.getElementById('antwortField').classList.toggle('hidden', entryType !== "Antwort");
-
-      errorBox.classList.add("hidden");
     }
 
     function validateForm() {
       playClick();
-      const entryType = document.getElementById("hiddenTyp").value;
-      const frage = document.getElementById("frageField").value.trim();
-      const antwort = document.getElementById("antwortField").value.trim();
-      const textError = document.getElementById("textError");
-
-      if ((entryType === "Frage" && !frage) || (entryType === "Antwort" && !antwort)) {
-        textError.textContent = "Der Schatten kann keine Leere lesen. Fülle das Feld aus.";
-        textError.classList.remove("hidden", "shake");
-        void textError.offsetWidth;
-        textError.classList.add("shake");
-        return false;
-      }
-
-      textError.classList.add("hidden");
-      return true;
+      const choice = document.getElementById("choice").value;
+      alert("Du hast dich entschieden: " + choice);
     }
 
     function goBack() {
       playClick();
-      document.getElementById('formArea').classList.add('hidden');
-      document.getElementById('login').classList.remove('hidden');
-      document.getElementById('frageField').value = '';
-      document.getElementById('antwortField').value = '';
+      document.getElementById("formSection").style.display = "none";
     }
 
-    window.addEventListener('load', () => {
+    window.addEventListener("load", () => {
       const intro = document.getElementById("intro");
       const main = document.getElementById("mainContent");
-      let hasClicked = false;
+      const introSound = document.getElementById("introSound");
 
-      const triggerStart = () => {
-        if (hasClicked) return;
-        hasClicked = true;
-        document.getElementById("introSound").play();
+      let triggered = false;
+
+      const beginExperience = () => {
+        if (triggered) return;
+        triggered = true;
+
+        audioContext.resume().then(() => {
+          playSoundWithFade(introSound, introGain, 1, 0);
+        });
+
         intro.style.animationPlayState = 'running';
         setTimeout(() => {
           intro.style.display = 'none';
@@ -253,10 +196,15 @@
         }, 4000);
       };
 
-      document.body.addEventListener("click", triggerStart);
-      document.body.addEventListener("keydown", triggerStart);
+      document.body.addEventListener("click", beginExperience);
+      document.body.addEventListener("keydown", beginExperience);
+
+      setTimeout(() => {
+        audioContext.resume().then(() => {
+          playSoundWithFade(introSound, introGain, 1, 0);
+        });
+      }, 300);
     });
   </script>
-
 </body>
 </html>
