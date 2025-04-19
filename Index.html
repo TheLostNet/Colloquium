@@ -88,7 +88,6 @@
       animation: fadeOut 6s ease forwards;
     }
 
-
     @keyframes fadeOut {
       0% { opacity: 1; }
       100% { opacity: 0; visibility: hidden; }
@@ -246,7 +245,7 @@
       const intro = document.getElementById('intro');
       const introSound = document.getElementById('introSound');
       introSound.volume = 0.4;
-    
+
       function startApp() {
         intro.classList.add('hide');
         setTimeout(() => {
@@ -255,17 +254,13 @@
         }, 3000);
         introSound.play();
       }
-    
+
       document.addEventListener('mousedown', function handler(event) {
         if (event.button === 0) { // Nur Linksklick
           document.removeEventListener('mousedown', handler);
           startApp();
         }
       });
-
-      });
-    });
-
     });
   </script>
 </body>
