@@ -127,6 +127,14 @@
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
     }
+
+    .warning {
+      font-size: 0.9em;
+      font-style: italic;
+      opacity: 0.8;
+      margin-top: 1rem;
+    }
+
   </style>
 </head>
 <body>
@@ -161,16 +169,20 @@
         <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schatteneminenz..." class="hidden"></textarea>
         <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
         <div id="textError" class="error hidden"></div>
-        <button type="submit">Senden an den Schatteneminenz</button>
+        <button type="submit">Senden an den Schattenfürsten</button>
       </form>
       <button onclick="goBack()">⇦ Zurück zur Auswahl</button>
     </div>
-  </div>
 
-  <div class="container hidden" id="submitSuccess">
-    <h2>🕯️ Deine Botschaft wurde dem Schatten übermittelt.</h2>
-    <p>Der Schatteneminenz hat deine Worte empfangen. Er wird antworten... wenn er es für nötig hält.</p>
-    <button onclick="returnToLogin()">⇦ Zurück zur Anmeldung</button>
+    <div class="container hidden" id="submitSuccess">
+      <h2>🕯️ Deine Botschaft wurde dem Schatten übermittelt.</h2>
+      <p>Der Schatteneminenz hat deine Worte vernommen. Er wird antworten... wenn er es für nötig hält.</p>
+      <p class="warning">Sprich mit niemandem über diese Begegnung. Der Schatten beobachtet stets.</p>
+      <button onclick="returnToLogin()">⇦ Kehre in die Dunkelheit zurück</button>
+    </div>
+    
+    
+
   </div>
 
   <script>
@@ -208,10 +220,9 @@
       const encryptedInput = encrypt(input);
 
       if (!allowedNames.includes(encryptedInput) || !entryType) {
-        let message = !allowedNames.includes(encryptedInput)
+        errorBox.textContent = !allowedNames.includes(encryptedInput)
           ? "⚠️ Der Schatten kennt dich nicht."
           : "⚠️ Wähle deine Absicht: Frage oder Antwort.";
-        errorBox.textContent = message;
         errorBox.classList.remove("hidden", "shake");
         void errorBox.offsetWidth;
         errorBox.classList.add("shake");
@@ -270,7 +281,7 @@
       const form = document.getElementById('shadowForm');
       const formData = new FormData(form);
 
-      fetch("https://formspree.io/f/mjkyzyvn", {
+      fetch("https://formspree.io/f/mjkyzyvn", { //mjkyzyvn
         method: "POST",
         body: formData,
         headers: { 'Accept': 'application/json' }
