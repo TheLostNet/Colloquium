@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shadow Garden Zugang</title>
+  <title>Shadow Garden Access</title>
   <style>
     * { box-sizing: border-box; }
 
@@ -140,8 +140,8 @@
 <body>
 
   <div id="intro">
-    Willkommen im Schatten...
-    <div id="clickHint">Klicke, um fortzufahren</div>
+    Welcome to the shadows...
+    <div id="clickHint">Click to proceed</div>
   </div>
 
   <audio id="clickSound" src="./click.mp3" preload="auto"></audio>
@@ -150,44 +150,42 @@
   <div class="container" id="mainContent" style="display: none;">
     <img src="./logo.png" alt="Shadow Garden Logo" class="logo" />
     <div id="login">
-      <h2>Shadow Garden - Zugang</h2>
-      <p>Gib deinen Schattennamen ein und wähle deine Absicht:</p>
-      <input type="password" id="shadowpass" placeholder="Schattenname" />
+      <h2>Shadow Garden - Access</h2>
+      <p>Enter your shadow name and choose your intent:</p>
+      <input type="password" id="shadowpass" placeholder="Shadow Name" />
       <select id="entryType">
-        <option value="">-- Absicht wählen --</option>
-        <option value="Frage">Ich habe eine Frage</option>
-        <option value="Antwort">Ich bringe eine Antwort</option>
+        <option value="">-- Choose intent --</option>
+        <option value="Frage">I have a question</option>
+        <option value="Antwort">I bring an answer</option>
       </select>
-      <button onclick="verify()">Eintreten</button>
-      <div id="loginError" class="error hidden">⚠️ Zugang verweigert.</div>
+      <button onclick="verify()">Enter</button>
+      <div id="loginError" class="error hidden">⚠️ Access denied.</div>
     </div>
 
     <div id="formArea" class="hidden">
       <form id="shadowForm" method="POST" onsubmit="submitForm(event)">
-        <input type="text" name="Schattenname" id="shadowname" readonly />
-        <input type="hidden" name="Typ" id="hiddenTyp" />
-        <textarea name="Frage" id="frageField" rows="6" placeholder="Deine Frage an den Schatteneminenz..." class="hidden"></textarea>
-        <textarea name="Antwort" id="antwortField" rows="6" placeholder="Deine Antwort auf die Mission..." class="hidden"></textarea>
+        <input type="text" name="ShadowName" id="shadowname" readonly />
+        <input type="hidden" name="Type" id="hiddenTyp" />
+        <textarea name="Question" id="frageField" rows="6" placeholder="Your question to the Shadow Eminence..." class="hidden"></textarea>
+        <textarea name="Answer" id="antwortField" rows="6" placeholder="Your answer to the mission..." class="hidden"></textarea>
         <div id="textError" class="error hidden"></div>
-        <button type="submit">Senden an den Schattenfürsten</button>
+        <button type="submit">Send to the Shadow eminence</button>
       </form>
-      <button onclick="goBack()">⇦ Zurück zur Auswahl</button>
+      <button onclick="goBack()">⇦ Back to selection</button>
     </div>
 
     <div class="container hidden" id="submitSuccess">
-      <h2>🕯️ Deine Botschaft wurde dem Schatten übermittelt.</h2>
-      <p>Der Schatteneminenz hat deine Worte vernommen. Er wird antworten... wenn er es für nötig hält.</p>
-      <p class="warning">Sprich mit niemandem über diese Begegnung. Der Schatten beobachtet stets.</p>
-      <button onclick="returnToLogin()">⇦ Kehre in die Dunkelheit zurück</button>
+      <h2>🕯️ Your message has been delivered to the Shadow.</h2>
+      <p>The Shadow Eminence has heard your words. He will respond... if he deems it necessary.</p>
+      <p class="warning">Speak to no one about this encounter. The Shadow is always watching.</p>
+      <button onclick="returnToLogin()">⇦ Return to the darkness</button>
     </div>
-    
-    
-
   </div>
 
   <script>
     const allowedNames = [
       "7[]x§~4;;8;+9_.a!-3ä2y<<w][x§~9_.",
+      "q//"
     ];
 
     const encryptTable = {
@@ -221,8 +219,8 @@
 
       if (!allowedNames.includes(encryptedInput) || !entryType) {
         errorBox.textContent = !allowedNames.includes(encryptedInput)
-          ? "⚠️ Der Schatten kennt dich nicht."
-          : "⚠️ Wähle deine Absicht: Frage oder Antwort.";
+          ? "⚠️ The shadow does not know you."
+          : "⚠️ Choose your intent: Question or Answer.";
         errorBox.classList.remove("hidden", "shake");
         void errorBox.offsetWidth;
         errorBox.classList.add("shake");
@@ -247,7 +245,7 @@
       const textError = document.getElementById("textError");
 
       if ((entryType === "Frage" && !frage) || (entryType === "Antwort" && !antwort)) {
-        textError.textContent = "Der Schatten kann keine Leere lesen. Fülle das Feld aus.";
+        textError.textContent = "The Shadow cannot read the void. Fill out the field.";
         textError.classList.remove("hidden", "shake");
         void textError.offsetWidth;
         textError.classList.add("shake");
@@ -281,7 +279,7 @@
       const form = document.getElementById('shadowForm');
       const formData = new FormData(form);
 
-      fetch("https://formspree.io/f/mjkyzyvn", { //mjkyzyvn
+      fetch("https://formspree.io/f/mjkyzyvn", {
         method: "POST",
         body: formData,
         headers: { 'Accept': 'application/json' }
@@ -291,11 +289,11 @@
           document.getElementById('formArea').classList.add('hidden');
           document.getElementById('submitSuccess').classList.remove('hidden');
         } else {
-          alert("Der Schatten hat deine Nachricht nicht empfangen. Versuche es erneut.");
+          alert("The Shadow has not received your message. Try again.");
         }
       })
       .catch(() => {
-        alert("Ein Fehler ist aufgetreten. Der Schatten schweigt.");
+        alert("An error occurred. The Shadow is silent.");
       });
     }
 
