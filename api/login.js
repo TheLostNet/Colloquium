@@ -2,7 +2,7 @@
 import bcrypt from 'bcryptjs';
 
 const allowedHashes = [
-  '$2a$10$$2b$10$YnldE6T4aL9iIpvJFwRhl.rBhgKmNKSZw1g0YqDLnnJ0t88aN9YXm'
+  '$2b$10$7Ds2SIhoERCp8a8InJ2NauOwIiyWt77ShkJWIOMGrTvFzTWYKwsuS'
 ];
 
 export default async function handler(req, res) {
