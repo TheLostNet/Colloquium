@@ -192,53 +192,59 @@
     }
 
     async function verify() {
-      playClick();
-      const input = document.getElementById('shadowpass').value.trim();
-      const entryType = document.getElementById('entryType').value;
-      const errorBox = document.getElementById('loginError');
+  playClick();
+  const input = document.getElementById('shadowpass').value.trim();
+  const entryType = document.getElementById('entryType').value;
+  const errorBox = document.getElementById('loginError');
 
-      if (!entryType) {
-        errorBox.textContent = "⚠️ Choose your intent: Question or Answer.";
-        errorBox.classList.remove("hidden", "shake");
-        void errorBox.offsetWidth;
-        errorBox.classList.add("shake");
-        return;
-      }
+  console.log('Eingegebenes Passwort:', input);
+  console.log('EntryType:', entryType);
 
-      try {
-        const response = await fetch('/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: input })
-        });
+  if (!entryType) {
+    errorBox.textContent = "⚠️ Choose your intent: Question or Answer.";
+    errorBox.classList.remove("hidden", "shake");
+    void errorBox.offsetWidth;
+    errorBox.classList.add("shake");
+    return;
+  }
 
-        const data = await response.json();
+  try {
+    const response = await fetch('https://colloquium-sage.vercel.app/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: input })
+    });
 
-        if (!response.ok) {
-          errorBox.textContent = "⚠️ The shadow does not know you.";
-          errorBox.classList.remove("hidden", "shake");
-          void errorBox.offsetWidth;
-          errorBox.classList.add("shake");
-          return;
-        }
+    const data = await response.json();
 
-        // Login erfolgreich
-        document.getElementById('login').classList.add('hidden');
-        document.getElementById('formArea').classList.remove('hidden');
-        document.getElementById('shadowname').value = input;
-        document.getElementById('hiddenTyp').value = entryType;
+    console.log('Serverantwort:', data);
 
-        document.getElementById('frageField').classList.toggle('hidden', entryType !== "Frage");
-        document.getElementById('antwortField').classList.toggle('hidden', entryType !== "Antwort");
-        errorBox.classList.add("hidden");
-
-      } catch (error) {
-        errorBox.textContent = "⚠️ The Shadow is silent. Try again.";
-        errorBox.classList.remove("hidden", "shake");
-        void errorBox.offsetWidth;
-        errorBox.classList.add("shake");
-      }
+    if (!response.ok) {
+      errorBox.textContent = "⚠️ The shadow does not know you.";
+      errorBox.classList.remove("hidden", "shake");
+      void errorBox.offsetWidth;
+      errorBox.classList.add("shake");
+      return;
     }
+
+    // Login erfolgreich
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('formArea').classList.remove('hidden');
+    document.getElementById('shadowname').value = input;
+    document.getElementById('hiddenTyp').value = entryType;
+
+    document.getElementById('frageField').classList.toggle('hidden', entryType !== "Frage");
+    document.getElementById('antwortField').classList.toggle('hidden', entryType !== "Antwort");
+    errorBox.classList.add("hidden");
+
+  } catch (error) {
+    console.error('Fetch-Fehler:', error);
+    errorBox.textContent = "⚠️ The Shadow is silent. Try again.";
+    errorBox.classList.remove("hidden", "shake");
+    void errorBox.offsetWidth;
+    errorBox.classList.add("shake");
+  }
+}
 
 
     function validateForm() {
