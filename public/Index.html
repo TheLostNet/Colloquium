@@ -5,7 +5,136 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shadow Garden Access</title>
   <style>
-    /* ... Dein gesamtes CSS bleibt hier unverändert ... */
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: #0a0a0a;
+      color: #e0e0e0;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .hidden { display: none; }
+
+    h2 { margin-bottom: 20px; }
+
+    input, textarea, select, button {
+      margin: 8px 0;
+      padding: 10px;
+      background: #111;
+      border: 1px solid #444;
+      color: #e0e0e0;
+      width: 100%;
+    }
+
+    button {
+      cursor: pointer;
+      background: #222;
+      border: 1px solid #666;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #333;
+    }
+
+    .error {
+      color: #ff4444;
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 4px;
+    }
+
+    .shake {
+      animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+
+    #intro {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: #e0e0e0;
+      font-size: 2rem;
+      text-align: center;
+      opacity: 1;
+    }
+
+    #intro.hide {
+      animation: fadeOut 6s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+
+    #clickHint {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #888;
+      animation: blink 1.2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    img.logo {
+      width: 140px;
+      height: auto;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+      animation: fadeIn 2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    #mainContent.fadein {
+      animation: contentFadeIn 1.5s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes contentFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .warning {
+      font-size: 0.9em;
+      font-style: italic;
+      opacity: 0.8;
+      margin-top: 1rem;
+    }
+
   </style>
 </head>
 <body>
@@ -54,6 +183,7 @@
   </div>
 
   <script>
+
     function playClick() {
       const clickSound = document.getElementById('clickSound');
       clickSound.volume = 0.3;
@@ -76,8 +206,7 @@
       }
 
       try {
-        const baseURL = window.location.origin;
-        const response = await fetch(`${baseURL}/api/login`, {
+        const response = await fetch('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password: input })
@@ -86,7 +215,7 @@
         const data = await response.json();
 
         if (!response.ok) {
-          errorBox.textContent = data.message || "⚠️ The shadow does not know you.";
+          errorBox.textContent = "⚠️ The shadow does not know you.";
           errorBox.classList.remove("hidden", "shake");
           void errorBox.offsetWidth;
           errorBox.classList.add("shake");
@@ -110,6 +239,7 @@
         errorBox.classList.add("shake");
       }
     }
+
 
     function validateForm() {
       playClick();
