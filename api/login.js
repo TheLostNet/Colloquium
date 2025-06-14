@@ -15,24 +15,18 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
-  }
-
   const { password } = req.body;
 
   if (!password) {
-    res.status(400).json({ error: 'Password missing' });
-    return;
+    return res.status(400).json({ error: 'Password missing' });
   }
 
-  const match = allowedHashes.some(hash => bcrypt.compareSync(password, hash));
-
-  if (!match) {
-    res.status(401).json({ error: 'Invalid password' });
-    return;
+  for (const hash of allowedHashes) {
+    const match = await bcrypt.compare(password, hash);
+    if (match) {
+      return res.status(200).json({ success: true });
+    }
   }
 
-  res.status(200).json({ success: true, message: 'Access granted' });
+  return res.status(401).json({ error: 'Invalid password' });
 }
